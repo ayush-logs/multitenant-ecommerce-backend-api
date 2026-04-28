@@ -7,7 +7,14 @@ class User(AbstractUser):
     Custom user model with email as the primary authentication field.
     """
 
+    class Roles(models.TextChoices):
+        CUSTOMER = "customer", "Customer"
+        MERCHANT = "merchant", "Merchant"
+
     email = models.EmailField(unique=True)
+    role = models.CharField(
+        choices=Roles.choices, default=Roles.CUSTOMER, max_length=20
+    )
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username"]
