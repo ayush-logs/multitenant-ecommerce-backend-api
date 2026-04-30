@@ -15,7 +15,7 @@ class User(AbstractUser):
     role = models.CharField(
         choices=Roles.choices, default=Roles.CUSTOMER, max_length=20
     )
-
+    is_merchant = models.BooleanField(default=False)
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username"]
 
