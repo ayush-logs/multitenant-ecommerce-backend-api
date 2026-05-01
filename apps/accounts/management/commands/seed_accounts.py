@@ -16,19 +16,19 @@ class Command(BaseCommand):
         users_data = [
             # Create merchants
             {
-                "username": "merchant1",
+                "username": "merchant1",  # owns 1 store with 5 products
                 "email": "merchant1@example.com",
                 "password": "pass123",
                 "role": User.Roles.MERCHANT,
             },
             {
-                "username": "merchant2",
+                "username": "merchant2",  # owns 2 stores with 10 products each
                 "email": "merchant2@example.com",
                 "password": "pass123",
                 "role": User.Roles.MERCHANT,
             },
             {
-                "username": "merchant3",
+                "username": "merchant3",  # owns no stores, just to test merchant without products
                 "email": "merchant3@example.com",
                 "password": "pass123",
                 "role": User.Roles.MERCHANT,

@@ -5,6 +5,7 @@ from apps.products.views import (
     CategoryDetailAPIView,
     ProductListAPIView,
     ProductDetailAPIView,
+    ProductMerchantAPIView,
 )
 
 urlpatterns = [
@@ -22,4 +23,6 @@ urlpatterns = [
         ProductDetailAPIView.as_view(),
         name="product-detail",
     ),
+    # Merchant product endpoints
+    path("merchant/<int:store_id>/products/", ProductMerchantAPIView.as_view()),
 ]

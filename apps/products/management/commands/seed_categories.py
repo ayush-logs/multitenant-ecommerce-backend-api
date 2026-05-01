@@ -26,7 +26,10 @@ class Command(BaseCommand):
                 "name": "Lifestyle Shoes",
             },
             {
-                "name": "Athletic Wear",
+                "name": "Casual Wear",
+            },
+            {
+                "name": "Electronics",
             },
             {
                 "name": "Accessories",

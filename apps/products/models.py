@@ -37,7 +37,7 @@ class Product(models.Model):
         null=True,
         blank=True,
     )
-    store = models.ForeignKey(Store, on_delete=models.CASCADE, related_name="product")
+    store = models.ForeignKey(Store, on_delete=models.CASCADE, related_name="products")
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

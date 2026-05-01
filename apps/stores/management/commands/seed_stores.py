@@ -12,41 +12,63 @@ class Command(BaseCommand):
         self.stdout.write(self.style.WARNING('🗑️  Cleared existing stores'))
 
         # Get merchants (users with is_merchant=True)
-        merchants = User.objects.filter(is_merchant=True)
-        if not merchants.exists():
+        merchants = list(User.objects.filter(is_merchant=True))
+        if not merchants:
             self.stdout.write(
                 self.style.ERROR('❌ No merchants found. Run seed_accounts first.')
             )
             return
 
-        # Create sample stores
-        stores_data = [
-            {
-                "name": "Nike Official Store",
-                "description": "Official Nike store with premium athletic footwear and apparel",
-                "phone": "+1-555-0123",
-                "address": "123 Sports Avenue, New York, NY 10001",
-                "owner": merchants[0] if merchants else None,
-            },
-            {
-                "name": "Adidas Performance",
-                "description": "Premium Adidas products for athletes and fitness enthusiasts",
-                "phone": "+1-555-0124",
-                "address": "456 Fitness Blvd, Los Angeles, CA 90210",
-                "owner": merchants[0] if merchants else None,
-            },
-            {
-                "name": "Puma Athletic Center",
-                "description": "Puma's finest collection of running and training gear",
-                "phone": "+1-555-0125",
-                "address": "789 Runner's Way, Chicago, IL 60601",
-                "owner": merchants[0] if merchants else None,
-            },
-        ]
+        # Multi-tenant distribution: Merchant 1 → 1 store, Merchant 2 → 2 stores, Merchant 3 → 0 stores
+        stores_data = []
 
+        # Merchant 1 → 1 store
+        if len(merchants) >= 1:
+            stores_data.append({
+                "name": "Nike Mumbai",
+                "description": "Official Nike store in Mumbai with premium athletic footwear and apparel",
+                "phone": "+91-22-1234-5678",
+                "address": "123 Bandra West, Mumbai, Maharashtra 400050",
+                "owner": merchants[0],
+            })
+
+        # Merchant 2 → 2 stores
+        if len(merchants) >= 2:
+            stores_data.extend([
+                {
+                    "name": "Urban Threads Delhi",
+                    "description": "Trendy fashion and lifestyle store in the heart of Delhi",
+                    "phone": "+91-11-2345-6789",
+                    "address": "456 Connaught Place, New Delhi, Delhi 110001",
+                    "owner": merchants[1],
+                },
+                {
+                    "name": "TechBazaar India",
+                    "description": "Premium electronics and gadgets store with latest technology",
+                    "phone": "+91-80-3456-7890",
+                    "address": "789 MG Road, Bangalore, Karnataka 560001",
+                    "owner": merchants[1],
+                }
+            ])
+
+        # Merchant 3 → 0 stores (intentionally skipped for edge case testing)
+
+        # Create stores
+        created_stores = []
         for store_data in stores_data:
-            Store.objects.create(**store_data)
+            store = Store.objects.create(**store_data)
+            created_stores.append(store)
+
+        # Summary
+        merchant_store_counts = {}
+        for store in created_stores:
+            merchant_email = store.owner.email
+            merchant_store_counts[merchant_email] = merchant_store_counts.get(merchant_email, 0) + 1
 
         self.stdout.write(
-            self.style.SUCCESS(f'✓ Created {len(stores_data)} stores successfully')
+            self.style.SUCCESS(f'✓ Created {len(created_stores)} stores across {len(merchant_store_counts)} merchants')
         )
+
+        # Show distribution
+        for merchant_email, count in merchant_store_counts.items():
+            self.stdout.write(f'  • {merchant_email}: {count} store(s)')

@@ -1,6 +1,6 @@
 # Multitenant E-commerce Backend API
 
-A Django-based REST API for a multitenant e-commerce platform with support for multiple stores, products, and categories.
+A Django-based REST API for a multitenant e-commerce platform with support for multiple stores, products, and categories. Features advanced seeding with 50-80 dynamically generated products across multiple merchants.
 
 ## Features
 
@@ -9,11 +9,12 @@ A Django-based REST API for a multitenant e-commerce platform with support for m
 - **JWT Authentication**: Secure token-based authentication with refresh tokens
 - **Product Management**: Complete CRUD operations for products with categories
 - **Store Management**: Merchants can create and manage their stores
-- **Category System**: Hierarchical product categorization
+- **Category System**: Hierarchical product categorization with 7+ predefined categories
+- **Advanced Database Seeding**: Dynamic generation of 50-80 realistic products with varied pricing and stock levels
+- **Multi-tenant Data Distribution**: Uneven product distribution across stores with edge cases (stores with 0 products)
 - **REST API**: Built with Django REST Framework
 - **API Documentation**: Interactive Swagger UI and ReDoc documentation
 - **Environment Configuration**: Using django-environ for settings management
-- **Database Seeding**: Automated data seeding for development and testing
 
 ## Tech Stack
 
@@ -143,6 +144,51 @@ python manage.py seed --app accounts
 python manage.py seed --app stores
 python manage.py seed --app categories
 python manage.py seed --app products
+```
+
+## Sample Data Overview
+
+When you run the seeding commands, the following sample data is created:
+
+### Users (5 total)
+- **1 Admin User**: Superuser with full access
+- **3 Merchants**: Users with `is_merchant=True` who can create stores
+- **2 Customers**: Regular users for browsing
+
+### Stores (3 total, multi-tenant distribution)
+- **Merchant 1**: 1 store (e.g., Nike Mumbai)
+- **Merchant 2**: 2 stores (e.g., Urban Threads Delhi, TechBazaar India)
+- **Merchant 3**: 0 stores (edge case for testing)
+
+### Categories (7 total)
+- Running Shoes, Basketball Shoes, Casual Shoes, Lifestyle Shoes
+- Casual Wear, Electronics, Accessories
+
+### Products (50-80 total, dynamically generated)
+- **Realistic Names**: Category-specific (Nike, Adidas, Puma for shoes; fashion brands for clothing)
+- **Price Range**: ₹999 - ₹15,000 (INR-style pricing)
+- **Stock Distribution**:
+  - Out of stock (0): ~10% of products
+  - Low stock (1-5): ~20% of products
+  - High stock (20-100): ~70% of products
+- **Uneven Distribution**: Products distributed unevenly across stores
+- **Unique Constraints**: Automatic handling of duplicate names/slugs
+
+### Example Seeding Output
+```
+🌱 Starting seed process...
+🗑️  Clearing existing users...
+✓ Accounts seeded successfully
+🗑️  Cleared existing stores
+✓ Created 3 stores across 2 merchants
+🗑️  Clearing existing categories...
+✓ Categories seeded successfully
+🗑️  Clearing existing products...
+✓ Created 68 products across 2 stores
+  • Nike Mumbai: 34 product(s)
+  • Urban Threads Delhi: 34 product(s)
+  • Stores with 0 products: TechBazaar India
+✓ All seeds completed successfully!
 ```
 
 ## API Endpoints

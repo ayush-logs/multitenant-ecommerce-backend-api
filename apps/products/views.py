@@ -1,6 +1,8 @@
 from rest_framework import generics
-from rest_framework.permissions import AllowAny
+from rest_framework.generics import get_object_or_404
+from rest_framework.permissions import AllowAny, IsAuthenticated
 
+from apps.accounts.permissions import IsMerchant
 from apps.products.models import Product, Category
 from apps.products.serializers import (
     CategoryListSerializer,
@@ -8,6 +10,7 @@ from apps.products.serializers import (
     ProductListSerializer,
     ProductDetailSerializer,
 )
+from apps.stores.models import Store
 
 
 class CategoryListAPIView(generics.ListAPIView):
@@ -39,3 +42,20 @@ class ProductDetailAPIView(generics.RetrieveAPIView):
 
     def get_queryset(self):
         return Product.objects.select_related("category").all()
+
+
+class ProductMerchantAPIView(generics.ListCreateAPIView):
+    serializer_class = ProductDetailSerializer
+    permission_classes = [IsMerchant, IsAuthenticated]
+
+    def get_queryset(self):
+        store_id = self.kwargs["store_id"]
+        return Product.objects.filter(
+            store__id=store_id, store__owner=self.request.user
+        )
+
+    def perform_create(self, serializer):
+        store = get_object_or_404(
+            Store, id=self.kwargs["store_id"], owner=self.request.user
+        )
+        serializer.save(store=store)

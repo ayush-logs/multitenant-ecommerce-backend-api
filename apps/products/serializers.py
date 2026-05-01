@@ -47,6 +47,7 @@ class CategoryDetailSerializer(ModelSerializer):
 
 class ProductListSerializer(ModelSerializer):
     category = serializers.CharField(source="category.name", read_only=True)
+    store = serializers.CharField(source="store.name", read_only=True)
 
     class Meta:
         model = Product
@@ -54,6 +55,7 @@ class ProductListSerializer(ModelSerializer):
             "id",
             "name",
             "slug",
+            "store",
             "price",
             "stock",
             "category",
