@@ -77,3 +77,13 @@ class ProductDetailSerializer(ModelSerializer):
             "category",
             "created_at",
         ]
+
+
+class ProductMerchantCreateSerializer(ModelSerializer):
+    category = serializers.SlugRelatedField(
+        queryset=Category.objects.all(), slug_field="slug"
+    )
+
+    class Meta:
+        model = Product
+        fields = ["name", "description", "price", "stock", "category"]

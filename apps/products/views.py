@@ -9,6 +9,7 @@ from apps.products.serializers import (
     CategoryDetailSerializer,
     ProductListSerializer,
     ProductDetailSerializer,
+    ProductMerchantCreateSerializer,
 )
 from apps.stores.models import Store
 
@@ -45,7 +46,6 @@ class ProductDetailAPIView(generics.RetrieveAPIView):
 
 
 class ProductMerchantAPIView(generics.ListCreateAPIView):
-    serializer_class = ProductDetailSerializer
     permission_classes = [IsMerchant, IsAuthenticated]
 
     def get_queryset(self):
@@ -59,3 +59,24 @@ class ProductMerchantAPIView(generics.ListCreateAPIView):
             Store, id=self.kwargs["store_id"], owner=self.request.user
         )
         serializer.save(store=store)
+
+    def get_serializer_class(self):
+        if self.request.method == "POST":
+            return ProductMerchantCreateSerializer
+        return ProductListSerializer
+
+
+class ProductMerchantDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsMerchant, IsAuthenticated]
+    lookup_field = "slug"
+
+    def get_queryset(self):
+        store_id = self.kwargs["store_id"]
+        return Product.objects.filter(
+            store__id=store_id, store__owner=self.request.user
+        )
+
+    def get_serializer_class(self):
+        if self.request.method in ["PUT", "PATCH"]:
+            return ProductMerchantCreateSerializer
+        return ProductDetailSerializer

@@ -14,7 +14,7 @@ class Command(BaseCommand):
 
         # Get available stores and categories
         stores = list(Store.objects.all())
-        categories = list(Category.objects.all())
+        all_categories = list(Category.objects.all())
 
         if not stores:
             self.stdout.write(
@@ -22,7 +22,7 @@ class Command(BaseCommand):
             )
             return
 
-        if not categories:
+        if not all_categories:
             self.stdout.write(
                 self.style.ERROR('❌ No categories found. Run seed_categories first.')
             )
@@ -65,6 +65,11 @@ class Command(BaseCommand):
                 'Phone Case', 'Keychain', 'Belt', 'Cap', 'Scarf'
             ]
         }
+
+        # Filter categories to only main categories (with product templates)
+        # This ensures edge case categories (Premium Footwear, Limited Edition) remain empty
+        categories = [cat for cat in all_categories if cat.slug in product_templates.keys()]
+        edge_case_categories = [cat for cat in all_categories if cat not in categories]
 
         # Generate 50-80 products total
         total_products = random.randint(50, 80)
@@ -158,3 +163,10 @@ class Command(BaseCommand):
         stores_with_zero = [store.name for store in stores if store.name not in store_product_counts]
         if stores_with_zero:
             self.stdout.write(f'  • Stores with 0 products: {", ".join(stores_with_zero)}')
+
+        # Show categories with 0 products (edge case categories)
+        if edge_case_categories:
+            edge_case_names = [cat.name for cat in edge_case_categories]
+            self.stdout.write(
+                self.style.WARNING(f'⚠️  Edge case categories (0 products): {", ".join(edge_case_names)}')
+            )
