@@ -2,6 +2,23 @@
 
 A Django-based REST API for a multitenant e-commerce platform with support for multiple stores, products, and categories. Features advanced seeding with 50-80 dynamically generated products across multiple merchants.
 
+## Table of Contents
+
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+- [Project Structure](#project-structure)
+- [Environment Variables](#environment-variables)
+- [Database Seeding](#database-seeding)
+- [Sample Data Overview](#sample-data-overview)
+- [API Endpoints](#api-endpoints)
+- [User Roles](#user-roles)
+- [Testing](#testing)
+- [Contributing](#contributing)
+- [License](#license)
+
 ## Features
 
 - **Multi-tenancy**: Support for multiple stores/vendors on a single codebase
@@ -9,6 +26,8 @@ A Django-based REST API for a multitenant e-commerce platform with support for m
 - **JWT Authentication**: Secure token-based authentication with refresh tokens
 - **Product Management**: Complete CRUD operations for products with categories
 - **Store Management**: Merchants can create and manage their stores
+- **Order Management System**: Complete order lifecycle with status tracking
+- **Shopping Cart System**: Add, update, and manage cart items
 - **Category System**: Hierarchical product categorization with 7+ predefined categories
 - **Advanced Database Seeding**: Dynamic generation of 50-80 realistic products with varied pricing and stock levels
 - **Multi-tenant Data Distribution**: Uneven product distribution across stores with edge cases (stores with 0 products)
@@ -87,6 +106,16 @@ multitenant-ecommerce-backend-api/
 │   │   ├── serializers.py     # Registration & user serializers
 │   │   ├── views.py           # Authentication views
 │   │   ├── permissions.py     # Role-based permissions
+│   │   └── tests.py           # Unit tests
+│   ├── carts/                 # Shopping cart management
+│   │   ├── models.py          # Cart and CartItem models
+│   │   ├── serializers.py     # Cart serializers
+│   │   ├── views.py           # Cart CRUD views
+│   │   └── tests.py           # Unit tests
+│   ├── orders/                # Order management system
+│   │   ├── models.py          # Order and OrderItem models
+│   │   ├── serializers.py     # Order serializers
+│   │   ├── views.py           # Order CRUD views
 │   │   └── tests.py           # Unit tests
 │   ├── products/              # Product & category management
 │   │   ├── models.py          # Product & Category models
@@ -213,6 +242,18 @@ When you run the seeding commands, the following sample data is created:
 - `PUT /api/v1/stores/{id}/` - Update store
 - `PATCH /api/v1/stores/{id}/` - Partial update store
 
+### Orders
+- `POST /api/v1/orders/` - Create new order (customers)
+- `GET /api/v1/orders/` - List user's orders (customers)
+- `GET /api/v1/orders/{id}/` - Order details (customers)
+- `PATCH /api/v1/orders/{id}/` - Update order status (merchants)
+
+### Carts
+- `GET /api/v1/carts/` - Get user's cart
+- `POST /api/v1/carts/items/` - Add item to cart
+- `PUT /api/v1/carts/items/{id}/` - Update cart item quantity
+- `DELETE /api/v1/carts/items/{id}/` - Remove item from cart
+
 ### API Documentation
 - `GET /api/schema/swagger-ui/` - Interactive Swagger UI
 - `GET /api/schema/redoc/` - ReDoc documentation
@@ -220,8 +261,8 @@ When you run the seeding commands, the following sample data is created:
 
 ## User Roles
 
-- **Customer**: Can browse products and categories
-- **Merchant**: Can create/manage stores, products (future feature)
+- **Customer**: Can browse products and categories, manage shopping cart, and place orders
+- **Merchant**: Can create/manage stores, view and update order status
 
 ## Testing
 
