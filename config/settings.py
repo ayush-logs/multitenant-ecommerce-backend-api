@@ -151,4 +151,10 @@ SIMPLE_JWT = {
     "BLACKLIST_AFTER_ROTATION": True,
 }
 
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Multi-Tenant E-Commerce API",
+    "VERSION": "1.0.0",
+    "SCHEMA_PATH_PREFIX": "/api/v1",
+}
+
 CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS", default=[])
