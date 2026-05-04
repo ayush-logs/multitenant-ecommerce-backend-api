@@ -1,6 +1,10 @@
 django
 djangorestframework
 djangorestframework-simplejwt
-psycopg2-binary
-django-environ
 drf_spectacular
+gunicorn
+psycopg2-binary
+dj-database-url
+whitenoise
+django-environ
+django-cors-headers
